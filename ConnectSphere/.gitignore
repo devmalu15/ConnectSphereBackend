@@ -1,0 +1,42 @@
+## [Visual Studio]
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd][Ee][Bb][Uu][Gg]/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio cache/options directory
+.vs/
+.vscode/
+
+## [NuGet]
+*.nupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+
+## [Testing]
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+coverage.json
+
+## [Environment Secrets]
+# Keep appsettings.json, but ignore development/local versions
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+*.env
+
+## [OS generated files]
+.DS_Store
+Thumbs.db

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ConnectSphere.Notif.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ccdac81c6b3052df3db67e0ab988779ef4ed0c38")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c3c4a2fcf0f85fad94dff2f37a4b4c13d3a5647e")]
 [assembly: System.Reflection.AssemblyProductAttribute("ConnectSphere.Notif.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ConnectSphere.Notif.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
