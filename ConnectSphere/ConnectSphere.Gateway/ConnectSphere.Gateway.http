@@ -1,0 +1,6 @@
+@ConnectSphere.Gateway_HostAddress = http://localhost:5096
+
+GET {{ConnectSphere.Gateway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
