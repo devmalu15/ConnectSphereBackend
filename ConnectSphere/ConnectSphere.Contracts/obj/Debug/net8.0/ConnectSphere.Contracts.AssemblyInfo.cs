@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ConnectSphere.Contracts")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d5d72fc17a61f21922d331ef4ee49d53fd7edd81")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2726f7cdff1179abde3361e5bf04d3ed2f0b7b9d")]
 [assembly: System.Reflection.AssemblyProductAttribute("ConnectSphere.Contracts")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ConnectSphere.Contracts")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
