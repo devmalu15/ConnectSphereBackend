@@ -1,0 +1,12 @@
+<Solution>
+  <Project Path="ConnectSphere.Admin.API/ConnectSphere.Admin.API.csproj" />
+  <Project Path="ConnectSphere.Auth.API/ConnectSphere.Auth.API.csproj" />
+  <Project Path="ConnectSphere.Comment.API/ConnectSphere.Comment.API.csproj" />
+  <Project Path="ConnectSphere.Contracts/ConnectSphere.Contracts.csproj" />
+  <Project Path="ConnectSphere.Feed.API/ConnectSphere.Feed.API.csproj" />
+  <Project Path="ConnectSphere.Follow.API/ConnectSphere.Follow.API.csproj" />
+  <Project Path="ConnectSphere.Gateway/ConnectSphere.Gateway.csproj" />
+  <Project Path="ConnectSphere.Like.API/ConnectSphere.Like.API.csproj" />
+  <Project Path="ConnectSphere.Notif.API/ConnectSphere.Notif.API.csproj" />
+  <Project Path="ConnectSphere.Post.API/ConnectSphere.Post.API.csproj" />
+</Solution>
