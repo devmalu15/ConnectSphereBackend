@@ -1,5 +1,5 @@
 using ConnectSphere.Auth.API.Services; 
-using ConnectSphere.Contracts.Events; 
+using ConnectSphere.Contracts.Events.Interface; 
 using MassTransit; 
   
 namespace ConnectSphere.Auth.API.Consumers; 

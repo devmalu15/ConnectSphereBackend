@@ -1,4 +1,4 @@
-namespace ConnectSphere.Contracts.Events; 
+namespace ConnectSphere.Contracts.Events.Interface; 
   
 public interface IFollowRequestedEvent 
 { 

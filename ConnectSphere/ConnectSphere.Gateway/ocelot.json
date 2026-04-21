@@ -1,4 +1,4 @@
-  "Routes": [ 
+ { "Routes": [ 
     { 
       "DownstreamPathTemplate": "/api/users/{everything}", 
       "DownstreamScheme": "http", 
