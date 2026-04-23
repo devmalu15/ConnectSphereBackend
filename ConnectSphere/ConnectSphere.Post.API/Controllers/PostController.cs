@@ -38,6 +38,8 @@ null;
         return post == null ? NotFound() : Ok(ApiResponse<PostDto>.Ok(post));
     }
 
+
+
     [HttpGet("user/{userId:int}")]
     public async Task<IActionResult> GetByUser(int userId, [FromQuery] int page =
 1, [FromQuery] int pageSize = 20)
@@ -76,6 +78,15 @@ null;
         return Ok(ApiResponse<IList<PostDto>>.Ok(posts));
     }
 
+
+    // Add this inside PostController — LikeService calls this via HTTP
+    [HttpPatch("{id:int}/like-count")]
+    public async Task<IActionResult> UpdateLikeCount(int id, [FromQuery] int delta)
+    {
+        await _service.UpdateLikeCountAsync(id, delta);
+        return Ok();
+    }
+
     [HttpPut("{id:int}")]
     [Authorize]
     public async Task<IActionResult> Update(int id, [FromBody] UpdatePostDto dto)
@@ -99,4 +110,7 @@ null;
         var post = await _service.RepostAsync(id, CurrentUserId);
         return Ok(ApiResponse<PostDto>.Ok(post));
     }
+
+
+
 }

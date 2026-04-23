@@ -36,15 +36,15 @@ builder.Services.AddScoped<ILikeRepository, LikeRepository>();
 builder.Services.AddScoped<ILikeService, LikeService>(); 
   
 // Typed HTTP clients for updating LikeCount on Post and Comment services 
-builder.Services.AddHttpClient("PostService", c => 
-    c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:PostService"]!)) 
-    .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ => 
-TimeSpan.FromSeconds(1))); 
+// builder.Services.AddHttpClient("PostService", c => 
+//     c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:PostService"]!)) 
+//     .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ => 
+// TimeSpan.FromSeconds(1))); 
   
-builder.Services.AddHttpClient("CommentService", c => 
-    c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CommentService"]!)) 
-    .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ => 
-TimeSpan.FromSeconds(1))); 
+// builder.Services.AddHttpClient("CommentService", c => 
+//     c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CommentService"]!)) 
+//     .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ => 
+// TimeSpan.FromSeconds(1))); 
   
 builder.Services.AddMassTransit(x => 
 { 

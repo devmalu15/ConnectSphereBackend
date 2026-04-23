@@ -15,6 +15,8 @@ pageSize);
     Task<IList<PostDto>> GetTrendingAsync(int topN = 20); 
     Task<PostDto> UpdateAsync(int postId, int userId, UpdatePostDto dto); 
     Task SoftDeleteAsync(int postId, int userId); 
+    Task UpdateLikeCountAsync(int postId, int delta);
+
     Task<PostDto> RepostAsync(int postId, int userId); 
     Task UpdateDistributionStatusAsync(int postId, string status); 
     Task IncrementCommentCountAsync(int postId); 
