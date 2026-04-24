@@ -12,7 +12,7 @@ public class PostDeletedConsumer : IConsumer<IPostDeletedEvent>
 
     public async Task Consume(ConsumeContext<IPostDeletedEvent> context)
     {
-        // Soft delete all comments belonging to the deleted post
+        
         await _ctx.Comments
             .Where(c => c.PostId == context.Message.PostId)
             .ExecuteUpdateAsync(s => s.SetProperty(c => c.IsDeleted, true));

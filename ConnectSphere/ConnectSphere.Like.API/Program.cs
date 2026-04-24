@@ -9,6 +9,7 @@ using Microsoft.OpenApi.Models;
 using Serilog; 
 using System.Text; 
 using Polly;
+using ConnectSphere.Like.API.Consumers;
   
 var builder = WebApplication.CreateBuilder(args); 
 builder.Host.UseSerilog(new 
@@ -35,19 +36,10 @@ SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt["Secret"]!))
 builder.Services.AddScoped<ILikeRepository, LikeRepository>(); 
 builder.Services.AddScoped<ILikeService, LikeService>(); 
   
-// Typed HTTP clients for updating LikeCount on Post and Comment services 
-// builder.Services.AddHttpClient("PostService", c => 
-//     c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:PostService"]!)) 
-//     .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ => 
-// TimeSpan.FromSeconds(1))); 
-  
-// builder.Services.AddHttpClient("CommentService", c => 
-//     c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CommentService"]!)) 
-//     .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ => 
-// TimeSpan.FromSeconds(1))); 
-  
 builder.Services.AddMassTransit(x => 
 { 
+    x.AddConsumer<LikePostDeletedConsumer>();
+
     x.UsingRabbitMq((ctx, cfg) => 
     { 
         cfg.Host(builder.Configuration["RabbitMQ:Host"], 

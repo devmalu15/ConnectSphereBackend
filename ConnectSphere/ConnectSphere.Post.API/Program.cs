@@ -43,6 +43,7 @@ builder.Services.AddMassTransit(x =>
     x.AddConsumer<PostCommentDeletedConsumer>();
     x.AddConsumer<PostFeedFanoutFailedConsumer>(); 
     x.AddConsumer<PostLikeToggledConsumer>(); 
+
     x.UsingRabbitMq((ctx, cfg) => 
     { 
         cfg.Host(builder.Configuration["RabbitMQ:Host"], 
