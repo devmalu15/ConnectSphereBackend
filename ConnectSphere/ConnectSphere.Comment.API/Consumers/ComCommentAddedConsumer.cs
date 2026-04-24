@@ -14,7 +14,7 @@ public class ComCommentAddedConsumer : IConsumer<ICommentAddedEvent>
     {
         var message = context.Message;
 
-        // If this comment is a reply, increment the parent's ReplyCount
+
         if (message.ParentCommentId.HasValue)
         {
             await _ctx.Comments

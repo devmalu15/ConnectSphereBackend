@@ -13,10 +13,10 @@ public class CommentLikeToggledConsumer : IConsumer<ILikeToggledEvent>
 
     public async Task Consume(ConsumeContext<ILikeToggledEvent> context)
     {
-        // Only proceed if the like target is a COMMENT
+       
         if (context.Message.TargetType != TargetType.COMMENT) return;
 
-        // Note: Ensure your ILikeToggledEvent interface has the 'IsLiked' property
+       
         int delta = context.Message.IsLiked ? 1 : -1;
 
         await _ctx.Comments

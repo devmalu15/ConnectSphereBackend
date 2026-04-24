@@ -14,10 +14,7 @@ public class ComCommentDeletedConsumer : IConsumer<ICommentDeletedEvent>
     {
         var message = context.Message;
 
-        // MUST use IgnoreQueryFilters() — by the time this consumer fires,
-        // SoftDeleteAsync has already set IsDeleted = true via ExecuteUpdateAsync.
-        // The global query filter (c => !c.IsDeleted) would hide it otherwise,
-        // making comment always null and ReplyCount never decrementing.
+    
         var comment = await _ctx.Comments
             .IgnoreQueryFilters()
             .FirstOrDefaultAsync(c => c.CommentId == message.CommentId);

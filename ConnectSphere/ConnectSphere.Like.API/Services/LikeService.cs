@@ -12,7 +12,7 @@ public class LikeService : ILikeService
 {
     private readonly LikeDbContext _ctx;
     private readonly IPublishEndpoint _bus;
-    // private readonly IHttpClientFactory _httpFactory; 
+   
 
     public LikeService(LikeDbContext ctx, IPublishEndpoint bus)
     {
@@ -21,11 +21,11 @@ public class LikeService : ILikeService
 
     public async Task<bool> ToggleLikeAsync(int userId, int targetId, TargetType targetType)
     {
-        // 1. Determine state BEFORE changes
+        
         var existing = await _ctx.Likes.FirstOrDefaultAsync(l =>
             l.UserId == userId && l.TargetId == targetId && l.TargetType == targetType);
 
-        bool willBeLiked = (existing == null); // If it didn't exist, it will be a NEW like
+        bool willBeLiked = (existing == null); 
 
         Console.WriteLine(willBeLiked);
 
@@ -38,7 +38,7 @@ public class LikeService : ILikeService
             await _ctx.SaveChangesAsync();
 
             
-            // Change this in both the 'if' and 'else' branches
+           
             await _bus.Publish(new LikeToggledEvent(userId, targetId, targetType, true));
             Console.WriteLine("about to exit true if");
 
@@ -52,7 +52,7 @@ public class LikeService : ILikeService
 
             await _ctx.SaveChangesAsync();
 
-            // Change this in both the 'if' and 'else' branches
+            
             await _bus.Publish(new LikeToggledEvent(userId, targetId, targetType, false));
 
 

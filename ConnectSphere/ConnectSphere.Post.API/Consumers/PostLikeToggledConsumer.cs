@@ -15,7 +15,6 @@ public class PostLikeToggledConsumer : IConsumer<ILikeToggledEvent>
 {
 
     Console.WriteLine("reeached the consumer");
-    // 1. Safety check for the target type
     if (context.Message.TargetType != TargetType.POST) return;
 
     Console.WriteLine("Passedtypecheck");
@@ -25,7 +24,7 @@ public class PostLikeToggledConsumer : IConsumer<ILikeToggledEvent>
 
     Console.WriteLine($"[CONSUMER] Post: {postId}, Action: {(isLiked ? "LIKE" : "UNLIKE")}");
 
-    // 2. Perform the update with a clear IF/ELSE path in the database
+    
     await _ctx.Posts
         .Where(p => p.PostId == postId)
         .ExecuteUpdateAsync(s => s.SetProperty(

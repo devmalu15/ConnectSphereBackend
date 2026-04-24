@@ -2,8 +2,15 @@ using ConnectSphere.Contracts.DTOs;
 using ConnectSphere.Post.API.DTOs;
 using ConnectSphere.Post.API.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+
+using ConnectSphere.Contracts.Enums; 
+
+
+using Microsoft.AspNetCore.Mvc; 
+
+
+
 
 namespace ConnectSphere.Post.API.Controllers;
 
@@ -14,7 +21,6 @@ public class PostController : ControllerBase
     private readonly IPostService _service;
     public PostController(IPostService service) => _service = service;
 
-    // Use ClaimTypes.NameIdentifier as the primary, and "sub" as the fallback
     private int CurrentUserId => int.Parse(
         User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier) ??
         User.FindFirstValue("sub") ??
@@ -79,7 +85,7 @@ null;
     }
 
 
-    // Add this inside PostController — LikeService calls this via HTTP
+    
     [HttpPatch("{id:int}/like-count")]
     public async Task<IActionResult> UpdateLikeCount(int id, [FromQuery] int delta)
     {

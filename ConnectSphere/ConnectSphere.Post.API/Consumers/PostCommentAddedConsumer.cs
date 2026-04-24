@@ -12,7 +12,6 @@ public class PostCommentAddedConsumer : IConsumer<ICommentAddedEvent>
 
     public async Task Consume(ConsumeContext<ICommentAddedEvent> context)
     {
-        // Every comment and reply counts toward the post's total CommentCount
         await _ctx.Posts
             .Where(p => p.PostId == context.Message.PostId)
             .ExecuteUpdateAsync(s => s.SetProperty(

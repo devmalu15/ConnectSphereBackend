@@ -56,6 +56,8 @@ public class PostService : IPostService
             post.PostId, post.UserId, post.Content,
             post.Hashtags, post.Visibility, post.CreatedAt));
 
+
+        await _bus.Publish(new CountersUpdatedEvent(userId, 0, 0, 1));
         return ToDto(post);
     }
 
@@ -135,6 +137,8 @@ KeyNotFoundException();
         await _ctx.Posts.Where(p => p.PostId == postId)
             .ExecuteUpdateAsync(s => s.SetProperty(p => p.IsDeleted, true));
         await _bus.Publish(new PostDeletedEvent(postId, userId));
+
+        await _bus.Publish(new CountersUpdatedEvent(userId, 0, 0, -1));
     }
 
     public async Task<PostDto> RepostAsync(int postId, int userId)
