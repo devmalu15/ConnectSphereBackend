@@ -252,6 +252,25 @@ DateTime.UtcNow.AddDays(int.Parse(_config["JwtSettings:RefreshTokenExpiryDays"]!
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
+    public async Task SetRoleAsync(int userId, string role)
+    {
+        await _ctx.Users
+            .Where(u => u.UserId == userId)
+            .ExecuteUpdateAsync(s => s.SetProperty(u => u.Role, role));
+    }
+
+    public async Task ReactivateAccountAsync(int userId)
+{
+    await _ctx.Users
+        .Where(u => u.UserId == userId)
+        .ExecuteUpdateAsync(s => s.SetProperty(u => u.IsActive, true));
+}
+
+public async Task<int> GetCountAsync()
+{
+    return await _ctx.Users.CountAsync(u => u.IsActive);
+}
+
     private static UserDto ToDto(User u) => new(
         u.UserId, u.UserName, u.FullName, u.AvatarUrl,
         u.Bio, u.IsPrivate, u.FollowerCount, u.FollowingCount, u.PostCount);
