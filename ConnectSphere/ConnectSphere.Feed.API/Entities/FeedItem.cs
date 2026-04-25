@@ -1,0 +1,15 @@
+using Microsoft.EntityFrameworkCore; 
+  
+namespace ConnectSphere.Feed.API.Entities; 
+  
+[Index(nameof(UserId), nameof(CreatedAt))] 
+public class FeedItem 
+{ 
+    public int FeedItemId { get; set; } 
+    public int UserId { get; set; }        // Feed owner 
+    public int PostId { get; set; } 
+    public int ActorId { get; set; }       // Post author 
+    public decimal Score { get; set; } = 0; 
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow; 
+    public DateTime? ExpiresAt { get; set; } 
+} 
