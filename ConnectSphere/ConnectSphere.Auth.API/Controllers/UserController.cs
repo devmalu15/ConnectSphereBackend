@@ -69,8 +69,15 @@ public class UserController : ControllerBase
         return Ok(ApiResponse<UserDto>.Ok(user));
     }
 
+    [HttpGet("searchById")]
+    public async Task<IActionResult> SearchById([FromQuery] string q)
+    {
+        var users = await _service.SearchAsync(q);
+        return Ok(ApiResponse<IList<UserDto>>.Ok(users));
+    }
+
     [HttpGet("search")]
-    public async Task<IActionResult> Search([FromQuery] string q)
+    public async Task<IActionResult> Search([FromQuery] string q = "")
     {
         var users = await _service.SearchAsync(q);
         return Ok(ApiResponse<IList<UserDto>>.Ok(users));
@@ -129,4 +136,51 @@ ChangePasswordDto dto)
         var user = await _service.GetByIdAsync(id);
         return Ok(ApiResponse<UserDto>.Ok(user));
     }
+
+    // Only an existing Admin can promote another user
+    [HttpPut("{id:int}/promote")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> PromoteToAdmin(int id)
+    {
+        await _service.SetRoleAsync(id, "Admin");
+        return Ok(ApiResponse<string>.Ok("User promoted to Admin."));
+    }
+
+    [HttpPut("{id:int}/demote")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> DemoteToUser(int id)
+    {
+        await _service.SetRoleAsync(id, "User");
+        return Ok(ApiResponse<string>.Ok("User demoted to User."));
+    }
+
+    // Admin suspend — sets IsActive = false, callable by admin without ownership check
+    [HttpPut("{id:int}/suspend")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Suspend(int id)
+    {
+        await _service.DeactivateAccountAsync(id);
+        return Ok(ApiResponse<string>.Ok("User suspended."));
+    }
+
+    // Admin reactivate — sets IsActive = true
+    [HttpPut("{id:int}/reactivate")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> Reactivate(int id)
+    {
+        await _service.ReactivateAccountAsync(id);
+        return Ok(ApiResponse<string>.Ok("User reactivated."));
+    }
+
+    // User count for analytics
+    [HttpGet("count")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> GetCount()
+    {
+        var count = await _service.GetCountAsync();
+        return Ok(ApiResponse<int>.Ok(count));
+    }
+
+
+
 }

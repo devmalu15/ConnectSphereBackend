@@ -117,6 +117,24 @@ null;
         return Ok(ApiResponse<PostDto>.Ok(post));
     }
 
+    // PostController — add this
+[HttpDelete("{id:int}/internal")]
+public async Task<IActionResult> DeleteInternal(int id)
+{
+    var post = await _service.GetByIdAsync(id, null);
+    if (post == null) return NotFound();
+    await _service.SoftDeleteAsync(id, post.UserId); // bypass ownership check
+    return Ok(ApiResponse<string>.Ok("Post deleted by admin."));
+}
+
+// Also add an internal get for before-state snapshot
+[HttpGet("{id:int}/internal")]
+public async Task<IActionResult> GetByIdInternal(int id)
+{
+    var post = await _service.GetByIdAsync(id, null);
+    return post == null ? NotFound() : Ok(ApiResponse<PostDto>.Ok(post));
+}
+
 
 
 }
