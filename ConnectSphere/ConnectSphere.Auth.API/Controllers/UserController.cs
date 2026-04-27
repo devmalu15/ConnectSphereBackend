@@ -15,20 +15,22 @@ public class UserController : ControllerBase
     public UserController(IUserService service) => _service = service;
 
     private int CurrentUserId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub")!);
-
+    
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterDto dto)
-    {
-        var (token, refresh) = await _service.RegisterAsync(dto);
-        return Ok(ApiResponse<object>.Ok(new { token, refreshToken = refresh }));
-    }
+[AllowAnonymous]
+public async Task<IActionResult> Register([FromBody] RegisterDto dto)
+{
+    var (token, refresh, userId) = await _service.RegisterAsync(dto);
+    return Ok(ApiResponse<object>.Ok(new { token, refreshToken = refresh, userId }));
+}
 
-    [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginDto dto)
-    {
-        var (token, refresh) = await _service.LoginAsync(dto);
-        return Ok(ApiResponse<object>.Ok(new { token, refreshToken = refresh }));
-    }
+[HttpPost("login")]
+[AllowAnonymous]
+public async Task<IActionResult> Login([FromBody] LoginDto dto)
+{
+    var (token, refresh, userId) = await _service.LoginAsync(dto);
+    return Ok(ApiResponse<object>.Ok(new { token, refreshToken = refresh, userId }));
+}
 
     [HttpPost("logout")]
     [Authorize]
@@ -43,8 +45,8 @@ public class UserController : ControllerBase
     [HttpPost("oauth/google")]
     public async Task<IActionResult> GoogleOAuth([FromBody] GoogleOAuthDto dto)
     {
-        var (token, refresh) = await _service.GoogleOAuthAsync(dto.IdToken);
-        return Ok(ApiResponse<object>.Ok(new { token, refreshToken = refresh }));
+        var (token, refresh, userId) = await _service.GoogleOAuthAsync(dto.IdToken);
+        return Ok(ApiResponse<object>.Ok(new { token, refreshToken = refresh, userId }));
     }
 
     [HttpPost("refresh")]

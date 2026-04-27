@@ -6,9 +6,9 @@ namespace ConnectSphere.Auth.API.Services;
 
 public interface IUserService
 {
-    Task<(string Token, string RefreshToken)> RegisterAsync(RegisterDto dto);
-    Task<(string Token, string RefreshToken)> LoginAsync(LoginDto dto);
-    Task<(string Token, string RefreshToken)> GoogleOAuthAsync(string idToken);
+    Task<(string Token, string RefreshToken, int UserId)> RegisterAsync(RegisterDto dto);
+    Task<(string Token, string RefreshToken, int UserId)> LoginAsync(LoginDto dto);
+    Task<(string Token, string RefreshToken, int UserId)> GoogleOAuthAsync(string idToken);
     Task<string> RefreshTokenAsync(string refreshToken);
     Task LogoutAsync(int userId, string token);
     Task<UserDto> GetByIdAsync(int userId);

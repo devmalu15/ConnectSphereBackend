@@ -6,6 +6,17 @@ using Serilog;
 using System.Text; 
   
 var builder = WebApplication.CreateBuilder(args); 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
   
 Log.Logger = new LoggerConfiguration() 
     .WriteTo.Console() 

@@ -33,7 +33,7 @@ public class UserService : IUserService
         _cloudinary = cloudinary; _ctx = ctx;
     }
 
-    public async Task<(string Token, string RefreshToken)>
+    public async Task<(string Token, string RefreshToken, int UserId)>
 RegisterAsync(RegisterDto dto)
     {
         if (await _repo.ExistsByEmailAsync(dto.Email))
@@ -51,10 +51,10 @@ RegisterAsync(RegisterDto dto)
 
         await _repo.AddAsync(user);
         await _repo.SaveChangesAsync();
-        return (GenerateJwt(user), GenerateRefreshToken(user.UserId));
+        return (GenerateJwt(user), GenerateRefreshToken(user.UserId), user.UserId);
     }
 
-    public async Task<(string Token, string RefreshToken)> LoginAsync(LoginDto dto)
+    public async Task<(string Token, string RefreshToken, int UserId)> LoginAsync(LoginDto dto)
     {
         var user = await _repo.GetByEmailAsync(dto.Email)
             ?? throw new UnauthorizedAccessException("Invalid credentials.");
@@ -69,10 +69,10 @@ dto.Password);
             .ExecuteUpdateAsync(s => s.SetProperty(u => u.LastLoginAt,
 DateTime.UtcNow));
 
-        return (GenerateJwt(user), GenerateRefreshToken(user.UserId));
+        return (GenerateJwt(user), GenerateRefreshToken(user.UserId), user.UserId);
     }
 
-    public async Task<(string Token, string RefreshToken)> GoogleOAuthAsync(string
+    public async Task<(string Token, string RefreshToken, int UserId)> GoogleOAuthAsync(string
 idToken)
     {
         var payload = await GoogleJsonWebSignature.ValidateAsync(idToken);
@@ -93,7 +93,7 @@ Random().Next(1000, 9999),
             await _repo.AddAsync(user);
             await _repo.SaveChangesAsync();
         }
-        return (GenerateJwt(user), GenerateRefreshToken(user.UserId));
+        return (GenerateJwt(user), GenerateRefreshToken(user.UserId), user.UserId);
     }
 
     public async Task<string> RefreshTokenAsync(string refreshToken)

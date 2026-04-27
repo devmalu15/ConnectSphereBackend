@@ -1,8 +1,47 @@
  { "Routes": [ 
+      {
+      "DownstreamPathTemplate": "/api/users/login",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [{ "Host": "localhost", "Port": 5282 }],
+      "UpstreamPathTemplate": "/api/users/login",
+      "UpstreamHttpMethod": ["POST"],
+      "RateLimitOptions": {
+        "EnableRateLimiting": true,
+        "Period": "1m",
+        "Limit": 100,
+        "PeriodTimespan": 1
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/users/register",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [{ "Host": "localhost", "Port": 5282 }],
+      "UpstreamPathTemplate": "/api/users/register",
+      "UpstreamHttpMethod": ["POST"],
+      "RateLimitOptions": {
+        "EnableRateLimiting": true,
+        "Period": "1m",
+        "Limit": 100,
+        "PeriodTimespan": 1
+      }
+    },
+     {
+      "DownstreamPathTemplate": "/api/posts/public",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [{ "Host": "localhost", "Port": 5051 }],
+      "UpstreamPathTemplate": "/api/posts/public",
+      "UpstreamHttpMethod": ["GET"],
+      "RateLimitOptions": {
+        "EnableRateLimiting": true,
+        "Period": "1m",
+        "Limit": 100,
+        "PeriodTimespan": 1
+      }
+    },
     { 
       "DownstreamPathTemplate": "/api/users/{everything}", 
       "DownstreamScheme": "http", 
-      "DownstreamHostAndPorts": [{ "Host": "localhost", "Port": 5001 }], 
+      "DownstreamHostAndPorts": [{ "Host": "localhost", "Port": 5282 }], 
       "UpstreamPathTemplate": "/api/users/{everything}", 
       "UpstreamHttpMethod": ["GET","POST","PUT","DELETE"], 
       "AuthenticationOptions": { "AuthenticationProviderKey": "Bearer", 
@@ -13,7 +52,7 @@
     { 
       "DownstreamPathTemplate": "/api/posts/{everything}", 
       "DownstreamScheme": "http", 
-      "DownstreamHostAndPorts": [{ "Host": "localhost", "Port": 5002 }], 
+      "DownstreamHostAndPorts": [{ "Host": "localhost", "Port": 5051 }], 
       "UpstreamPathTemplate": "/api/posts/{everything}", 
       "UpstreamHttpMethod": ["GET","POST","PUT","DELETE"], 
       "AuthenticationOptions": { "AuthenticationProviderKey": "Bearer", 
@@ -24,7 +63,7 @@
     { 
       "DownstreamPathTemplate": "/api/likes/{everything}", 
       "DownstreamScheme": "http", 
-      "DownstreamHostAndPorts": [{ "Host": "localhost", "Port": 5003 }], 
+      "DownstreamHostAndPorts": [{ "Host": "localhost", "Port": 5091 }], 
       "UpstreamPathTemplate": "/api/likes/{everything}", 
       "UpstreamHttpMethod": ["GET","POST","PUT","DELETE"], 
       "AuthenticationOptions": { "AuthenticationProviderKey": "Bearer", 
@@ -35,7 +74,7 @@
     { 
       "DownstreamPathTemplate": "/api/comments/{everything}", 
       "DownstreamScheme": "http", 
-      "DownstreamHostAndPorts": [{ "Host": "localhost", "Port": 5004 }], 
+      "DownstreamHostAndPorts": [{ "Host": "localhost", "Port": 5287 }], 
       "UpstreamPathTemplate": "/api/comments/{everything}", 
       "UpstreamHttpMethod": ["GET","POST","PUT","DELETE"], 
       "AuthenticationOptions": { "AuthenticationProviderKey": "Bearer", 
@@ -46,7 +85,7 @@
     { 
       "DownstreamPathTemplate": "/api/follows/{everything}", 
       "DownstreamScheme": "http", 
-      "DownstreamHostAndPorts": [{ "Host": "localhost", "Port": 5005 }], 
+      "DownstreamHostAndPorts": [{ "Host": "localhost", "Port": 5209 }], 
       "UpstreamPathTemplate": "/api/follows/{everything}", 
       "UpstreamHttpMethod": ["GET","POST","PUT","DELETE"], 
       "AuthenticationOptions": { "AuthenticationProviderKey": "Bearer", 
@@ -57,7 +96,7 @@
     { 
       "DownstreamPathTemplate": "/api/notifications/{everything}", 
       "DownstreamScheme": "http", 
-      "DownstreamHostAndPorts": [{ "Host": "localhost", "Port": 5006 }], 
+      "DownstreamHostAndPorts": [{ "Host": "localhost", "Port": 5232 }], 
       "UpstreamPathTemplate": "/api/notifications/{everything}", 
       "UpstreamHttpMethod": ["GET","POST","PUT","DELETE"], 
       "AuthenticationOptions": { "AuthenticationProviderKey": "Bearer", 
@@ -68,7 +107,7 @@
     { 
       "DownstreamPathTemplate": "/api/feed/{everything}", 
       "DownstreamScheme": "http", 
-      "DownstreamHostAndPorts": [{ "Host": "localhost", "Port": 5007 }], 
+      "DownstreamHostAndPorts": [{ "Host": "localhost", "Port": 5299 }], 
       "UpstreamPathTemplate": "/api/feed/{everything}", 
       "UpstreamHttpMethod": ["GET","POST","PUT","DELETE"], 
       "AuthenticationOptions": { "AuthenticationProviderKey": "Bearer", 
@@ -79,7 +118,7 @@
     { 
       "DownstreamPathTemplate": "/api/admin/{everything}", 
       "DownstreamScheme": "http", 
-      "DownstreamHostAndPorts": [{ "Host": "localhost", "Port": 5008 }], 
+      "DownstreamHostAndPorts": [{ "Host": "localhost", "Port": 5158 }], 
       "UpstreamPathTemplate": "/api/admin/{everything}", 
       "UpstreamHttpMethod": ["GET","POST","PUT","DELETE"], 
       "AuthenticationOptions": { "AuthenticationProviderKey": "Bearer", 
@@ -96,4 +135,6 @@
       "HttpStatusCode": 429 
     } 
   } 
+
+  
 } 
