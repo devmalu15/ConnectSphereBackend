@@ -27,7 +27,7 @@ IHttpClientFactory httpFactory)
         {
             // Get all followers of the post author 
             var client = _httpFactory.CreateClient("FollowService");
-            var response = await client.GetAsync($"api/follows/{msg.UserId}/following-ids");
+            var response = await client.GetAsync($"api/follows/internal/{msg.UserId}/following-ids");
             // Note: "following-ids" returns followers OF the author 
             if (!response.IsSuccessStatusCode) throw new Exception("Could not fetch followers.");
 
@@ -40,6 +40,9 @@ IHttpClientFactory httpFactory)
                 await _feedService.AddToFeedAsync(followerId, msg.PostId,
 msg.UserId, engagementScore);
             }
+
+            await _bus.Publish(new
+ConnectSphere.Contracts.Events.Implementation.PostFeedFanoutCompletedEvent(msg.PostId));
         }
         catch (Exception ex)
         {

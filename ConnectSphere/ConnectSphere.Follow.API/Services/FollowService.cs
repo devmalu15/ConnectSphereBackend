@@ -101,6 +101,32 @@ followeeId));
         await _bus.Publish(new FollowRejectedEvent(followId, follow.FollowerId, 
 followeeId)); 
     } 
+
+
+    public async Task RemoveFollowerAsync(int userId, int followerId)
+{
+    // 1. Find the follow relationship where 'followerId' follows 'userId'
+    var follow = await _ctx.Follows.FirstOrDefaultAsync(f => 
+        f.FollowerId == followerId && f.FolloweeId == userId) 
+        ?? throw new KeyNotFoundException("Follower relationship not found.");
+
+    // 2. Remove the record
+    _ctx.Follows.Remove(follow);
+    await _ctx.SaveChangesAsync();
+
+    // 3. Only update counters and feeds if the follow was already ACTIVE/ACCEPTED
+    if (follow.Status == FollowStatus.ACCEPTED)
+    {
+        // Notify Feed service to break the link
+        await _bus.Publish(new UnfollowedEvent(followerId, userId));
+
+        // Decrement followers for the owner (userId)
+        await _bus.Publish(new CountersUpdatedEvent(userId, -1, 0, 0));
+
+        // Decrement following for the removed person (followerId)
+        await _bus.Publish(new CountersUpdatedEvent(followerId, 0, -1, 0));
+    }
+}
   
     public async Task<IList<int>> GetFollowerIdsAsync(int userId) => 
         await _ctx.Follows 

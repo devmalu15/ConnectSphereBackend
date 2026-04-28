@@ -42,6 +42,7 @@ builder.Services.AddMassTransit(x =>
     x.AddConsumer<PostCommentAddedConsumer>(); 
     x.AddConsumer<PostCommentDeletedConsumer>();
     x.AddConsumer<PostFeedFanoutFailedConsumer>(); 
+    x.AddConsumer<PostFeedFanoutCompletedConsumer>(); 
     x.AddConsumer<PostLikeToggledConsumer>(); 
 
     x.UsingRabbitMq((ctx, cfg) => 
