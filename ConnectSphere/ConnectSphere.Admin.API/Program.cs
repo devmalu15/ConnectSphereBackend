@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using Serilog; 
 using System.Text; 
 using Polly;
+using System.Text.Json.Serialization;
   
 var builder = WebApplication.CreateBuilder(args); 
 builder.Host.UseSerilog(new 
@@ -54,6 +55,11 @@ builder.Services.AddHttpClient("FeedService", c =>
     .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ => 
 TimeSpan.FromSeconds(1))); 
 
+builder.Services.AddHttpClient("LikeService", c => 
+    c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:LikeService"]!)) 
+    .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ => 
+TimeSpan.FromSeconds(1))); 
+
 builder.Services.AddHttpContextAccessor();
   
 builder.Services.AddMassTransit(x => 
@@ -71,7 +77,11 @@ builder.Configuration["RabbitMQ:VHost"], h =>
 }); 
   
 builder.Services.AddHealthChecks().AddSqlServer(connStr); 
-builder.Services.AddControllers(); 
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 builder.Services.AddEndpointsApiExplorer(); 
 builder.Services.AddSwaggerGen(c => 
 { 

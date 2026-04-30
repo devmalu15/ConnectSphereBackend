@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models; 
 using Serilog; 
 using System.Text; 
+using Polly; 
   
 var builder = WebApplication.CreateBuilder(args); 
 builder.Host.UseSerilog(new 
@@ -36,6 +37,11 @@ builder.Services.AddSingleton(new
 Cloudinary(builder.Configuration["Cloudinary:Url"]!)); 
 builder.Services.AddScoped<IPostRepository, PostRepository>(); 
 builder.Services.AddScoped<IPostService, PostService>(); 
+  
+builder.Services.AddHttpClient("AuthService", c => 
+    c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:AuthService"]!)) 
+    .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ => 
+TimeSpan.FromSeconds(1))); 
   
 builder.Services.AddMassTransit(x => 
 { 

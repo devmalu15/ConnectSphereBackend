@@ -2,6 +2,7 @@ using ConnectSphere.Comment.API.Data;
 using ConnectSphere.Comment.API.DTOs;
 using CommentEntity = ConnectSphere.Comment.API.Entities.Comment;
 using ConnectSphere.Contracts.DTOs;
+using ConnectSphere.Contracts.Enums;
 using ConnectSphere.Contracts.Events.Implementation;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -33,32 +34,49 @@ IHttpClientFactory httpFactory)
 
         _ctx.Comments.Add(comment);
 
-        // Restore: increment parent's ReplyCount when this is a reply
-        // if (comment.ParentCommentId.HasValue)
-        // {
-        //     await _ctx.Comments
-        //         .Where(c => c.CommentId == comment.ParentCommentId.Value)
-        //         .ExecuteUpdateAsync(s => s.SetProperty(
-        //             c => c.ReplyCount,
-        //             c => c.ReplyCount + 1));
-        // }
-
         await _ctx.SaveChangesAsync();
 
         await _bus.Publish(new CommentAddedEvent(
             comment.CommentId, comment.PostId, comment.UserId,
             comment.ParentCommentId, comment.Content, comment.CreatedAt));
 
-        await ProcessMentionsAsync(comment.Content);
+        await ProcessMentionsAsync(comment.UserId, comment.CommentId, comment.Content);
         return ToDto(comment);
     }
 
-    private async Task ProcessMentionsAsync(string content)
+    private async Task ProcessMentionsAsync(int actorId, int commentId, string content)
     {
-        // Fixed: was @"@(w+)" — missing backslash, never matched anything
-        var mentions = Regex.Matches(content, @"@(\w+)")
+        var usernames = Regex.Matches(content, @"@(\w+)")
             .Select(m => m.Groups[1].Value).Distinct().ToList();
-        // TODO: resolve each username via Auth.API HTTP call, then publish mention events
+
+        if (!usernames.Any()) return;
+
+        var client = _httpFactory.CreateClient("AuthService");
+        foreach (var username in usernames)
+        {
+            try
+            {
+                var response = await client.GetAsync($"api/users/username/{username}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<ApiResponse<UserDto>>();
+                    if (result?.Data != null && result.Data.UserId != actorId)
+                    {
+                        await _bus.Publish(new MentionEvent(
+                            actorId,
+                            result.Data.UserId,
+                            commentId,
+                            TargetType.COMMENT,
+                            content,
+                            DateTime.UtcNow));
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Log error
+            }
+        }
     }
     public async Task<IList<CommentDto>> GetByUserAsync(int userId) =>
     (await _ctx.Comments
@@ -149,6 +167,11 @@ commentId)
         totalDeleted));
 }
 
+    public async Task<int> GetCountAsync()
+    {
+        return await _ctx.Comments.CountAsync(c => !c.IsDeleted);
+    }
+
     private static CommentDto ToDto(CommentEntity c)
     {
         var displayContent = c.IsDeleted ? "This comment was deleted." : c.Content;
@@ -156,4 +179,4 @@ commentId)
             displayContent, c.LikeCount, c.ReplyCount, c.IsEdited, c.IsDeleted,
 c.CreatedAt, c.EditedAt);
     }
-}
+}

@@ -36,4 +36,6 @@ PostDistribution.PENDING;
   
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow; 
     public DateTime? UpdatedAt { get; set; } 
+
+    public ICollection<Mention> Mentions { get; set; } = new List<Mention>();
 }

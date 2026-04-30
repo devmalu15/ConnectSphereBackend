@@ -44,6 +44,8 @@ builder.Services.AddMassTransit(x =>
     x.AddConsumer<NotifFollowRequestedConsumer>(); 
     x.AddConsumer<NotifFollowAcceptedConsumer>(); 
     x.AddConsumer<BroadcastNotifConsumer>(); 
+    x.AddConsumer<NotifMentionConsumer>();
+    x.AddConsumer<NotifRepostedConsumer>();
   
     x.UsingRabbitMq((ctx, cfg) => 
     { 

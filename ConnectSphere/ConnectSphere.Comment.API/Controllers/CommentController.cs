@@ -74,4 +74,10 @@ public async Task<IActionResult> DeleteInternal(int id)
     await _service.SoftDeleteAsync(id, comment.UserId); // bypass ownership check
     return Ok(ApiResponse<string>.Ok("Comment deleted by admin."));
 }
-}
+    [HttpGet("count")]
+    public async Task<IActionResult> GetCount()
+    {
+        var count = await _service.GetCountAsync();
+        return Ok(ApiResponse<int>.Ok(count));
+    }
+}

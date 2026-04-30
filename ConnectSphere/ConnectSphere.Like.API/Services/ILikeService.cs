@@ -9,4 +9,5 @@ public interface ILikeService
     Task<bool> HasUserLikedAsync(int userId, int targetId, TargetType targetType); 
     Task<IList<int>> GetLikerIdsAsync(int targetId, TargetType targetType); 
     Task<IList<int>> GetLikedPostIdsByUserAsync(int userId); 
+    Task<int> GetTotalLikeCountAsync();
 }

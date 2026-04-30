@@ -22,25 +22,59 @@ IConsumer<ConnectSphere.Contracts.Events.Interface.ICommentAddedEvent>
 }
   
     public async Task Consume(ConsumeContext<ConnectSphere.Contracts.Events.Interface.ICommentAddedEvent> context)
-{
-    var msg = context.Message;
-    
-    // Call Post API to find out who owns the post
-    var client = _httpFactory.CreateClient("PostService");
-    var response = await client.GetAsync($"api/posts/{msg.PostId}");
-    
-    if (response.IsSuccessStatusCode)
     {
-        var result = await response.Content.ReadFromJsonAsync<ApiResponse<PostDto>>();
-        var postAuthorId = result?.Data?.UserId ?? 0;
+        var msg = context.Message;
+        int recipientId = 0;
+        NotifType type = NotifType.NEW_COMMENT;
+        string message = "";
 
-        _ctx.Notifications.Add(new Notification 
-        { 
-            RecipientId = postAuthorId, // Now you have the real ID!
-            ActorId = msg.UserId,
-            // ... rest of the code
-        });
-        await _ctx.SaveChangesAsync();
+        try
+        {
+            if (msg.ParentCommentId == null || msg.ParentCommentId == 0)
+            {
+                // Top-level comment: Notify Post Author
+                var client = _httpFactory.CreateClient("PostService");
+                var response = await client.GetAsync($"api/posts/{msg.PostId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<ApiResponse<PostDto>>();
+                    recipientId = result?.Data?.UserId ?? 0;
+                }
+                type = NotifType.NEW_COMMENT;
+                message = "Someone commented on your post.";
+            }
+            else
+            {
+                // Reply: Notify Parent Comment Author
+                var client = _httpFactory.CreateClient("CommentService");
+                var response = await client.GetAsync($"api/comments/{msg.ParentCommentId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var result = await response.Content.ReadFromJsonAsync<ApiResponse<CommentDto>>();
+                    recipientId = result?.Data?.UserId ?? 0;
+                }
+                type = NotifType.NEW_REPLY;
+                message = "Someone replied to your comment.";
+            }
+
+            if (recipientId != 0 && recipientId != msg.UserId)
+            {
+                _ctx.Notifications.Add(new Notification
+                {
+                    RecipientId = recipientId,
+                    ActorId = msg.UserId,
+                    Type = type,
+                    Message = message,
+                    TargetId = msg.CommentId,
+                    TargetType = TargetType.COMMENT,
+                    CreatedAt = DateTime.UtcNow
+                });
+                await _ctx.SaveChangesAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            // Log error in a real app
+        }
     }
 }
-} 

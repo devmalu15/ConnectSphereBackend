@@ -59,5 +59,12 @@ dto.TargetType);
         var ids = await _service.GetLikedPostIdsByUserAsync(userId); 
         return Ok(ApiResponse<IList<int>>.Ok(ids)); 
     } 
-} 
+    [HttpGet("total-count")]
+    public async Task<IActionResult> GetTotalCount()
+    {
+        var count = await _service.GetTotalLikeCountAsync();
+        return Ok(ApiResponse<int>.Ok(count));
+    }
+}
+ 
   

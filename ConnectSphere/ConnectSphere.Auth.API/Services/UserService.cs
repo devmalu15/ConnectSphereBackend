@@ -273,5 +273,6 @@ public async Task<int> GetCountAsync()
 
     private static UserDto ToDto(User u) => new(
         u.UserId, u.UserName, u.FullName, u.AvatarUrl,
-        u.Bio, u.IsPrivate, u.FollowerCount, u.FollowingCount, u.PostCount);
+        u.Bio, u.IsPrivate, u.FollowerCount, u.FollowingCount, u.PostCount, 
+        u.Role, u.IsActive, u.Email, u.CreatedAt);
 }

@@ -41,7 +41,7 @@ private string? BearerToken => _httpContextAccessor.HttpContext?
     private string ClientIp => HttpContext.Connection.RemoteIpAddress?.ToString() 
 ?? "unknown"; 
   
-   [HttpGet("users")] 
+    [HttpGet("users")] 
 public async Task<IActionResult> GetUsers([FromQuery] int page = 1, [FromQuery] int pageSize = 20) 
 { 
     var client = _httpFactory.CreateClient("AuthService"); 
@@ -89,7 +89,7 @@ ClientIp);
         return Ok(ApiResponse<string>.Ok("Comment deleted.")); 
     } 
   
-   [HttpGet("analytics")]
+    [HttpGet("analytics")]
 public async Task<IActionResult> GetAnalytics()
 {
     // Pass token so AdminService can forward it
@@ -100,8 +100,13 @@ public async Task<IActionResult> GetAnalytics()
     [HttpPost("notifications/broadcast")] 
     public async Task<IActionResult> Broadcast([FromBody] BroadcastRequestDto dto) 
     { 
+        if (!Enum.TryParse<NotifType>(dto.Type, true, out var notifType))
+        {
+            return BadRequest(ApiResponse<string>.Fail($"Invalid type: {dto.Type}"));
+        }
+
         await _bus.Publish(new BroadcastNotifEvent(dto.Title, dto.Message, 
-dto.UserIds, dto.Type)); 
+dto.UserIds, notifType)); 
         return Ok(ApiResponse<string>.Ok("Broadcast queued.")); 
     } 
   
@@ -116,4 +121,4 @@ dto.UserIds, dto.Type));
 } 
   
 public record BroadcastRequestDto(string Title, string Message, IList<int> UserIds, 
-NotifType Type); 
+string Type); 

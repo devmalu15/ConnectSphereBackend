@@ -102,4 +102,8 @@ targetType)
         await _ctx.Likes.Where(l => l.UserId == userId && l.TargetType ==
 TargetType.POST)
             .Select(l => l.TargetId).ToListAsync();
-}
+    public async Task<int> GetTotalLikeCountAsync()
+    {
+        return await _ctx.Likes.CountAsync();
+    }
+}

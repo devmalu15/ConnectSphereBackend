@@ -14,4 +14,5 @@ public interface ICommentService
     Task<CommentDto> EditAsync(int commentId, int userId, string newContent); 
     Task SoftDeleteAsync(int commentId, int userId); 
     Task IncrementLikeCountAsync(int commentId, int delta); 
+    Task<int> GetCountAsync();
 }

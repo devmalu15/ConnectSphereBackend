@@ -7,8 +7,7 @@ public interface IPostService
 { 
     Task<PostDto> CreateAsync(int userId, CreatePostDto dto); 
     Task<PostDto?> GetByIdAsync(int postId, int? requestingUserId); 
-    Task<PagedResult<PostDto>> GetByUserIdAsync(int userId, int page, int 
-pageSize); 
+    Task<PagedResult<PostDto>> GetByUserIdAsync(int userId, int page, int pageSize); 
     Task<PagedResult<PostDto>> GetPublicAsync(int page, int pageSize); 
     Task<IList<PostDto>> GetByHashtagAsync(string tag); 
     Task<IList<PostDto>> SearchAsync(string query); 
@@ -16,9 +15,10 @@ pageSize);
     Task<PostDto> UpdateAsync(int postId, int userId, UpdatePostDto dto); 
     Task SoftDeleteAsync(int postId, int userId); 
     Task UpdateLikeCountAsync(int postId, int delta);
-
     Task<PostDto> RepostAsync(int postId, int userId); 
     Task UpdateDistributionStatusAsync(int postId, string status); 
     Task IncrementCommentCountAsync(int postId); 
     Task DecrementCommentCountAsync(int postId); 
-} 
+    Task<int> GetCountAsync();
+    Task<PagedResult<PostDto>> GetMentionedPostsAsync(int userId, int page, int pageSize);
+}

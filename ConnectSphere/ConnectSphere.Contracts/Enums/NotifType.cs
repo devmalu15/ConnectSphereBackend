@@ -10,5 +10,10 @@ public enum NotifType
     FOLLOW_REQUEST, 
     FOLLOW_ACCEPTED, 
     MENTION, 
-    PLATFORM 
+    REPOST,
+    PLATFORM,
+    SYSTEM,
+    UPDATE,
+    PROMOTION,
+    ALERT
 }

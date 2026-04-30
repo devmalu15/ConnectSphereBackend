@@ -134,7 +134,18 @@ public async Task<IActionResult> GetByIdInternal(int id)
     var post = await _service.GetByIdAsync(id, null);
     return post == null ? NotFound() : Ok(ApiResponse<PostDto>.Ok(post));
 }
+    [HttpGet("count")]
+    public async Task<IActionResult> GetCount()
+    {
+        var count = await _service.GetCountAsync();
+        return Ok(ApiResponse<int>.Ok(count));
+    }
 
-
-
+    [HttpGet("mentions")]
+    [Authorize]
+    public async Task<IActionResult> GetMentions([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+    {
+        var result = await _service.GetMentionedPostsAsync(CurrentUserId, page, pageSize);
+        return Ok(ApiResponse<PagedResult<PostDto>>.Ok(result));
+    }
 }
