@@ -56,7 +56,7 @@ recipientId)
     public async Task SendAsync(int recipientId, int actorId, NotifType type, 
         string message, int? targetId, TargetType? targetType) 
     { 
-        if (recipientId == actorId) return; // Don't notify yourself 
+        if (recipientId == actorId) return; 
   
         await _repo.AddAsync(new Notification 
         { 

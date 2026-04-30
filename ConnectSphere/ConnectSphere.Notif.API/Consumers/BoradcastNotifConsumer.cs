@@ -22,7 +22,7 @@ context)
         var notifications = msg.UserIds.Select(uid => new Notification 
         { 
             RecipientId = uid, 
-            ActorId = 0, // system 
+            ActorId = 0, 
             Type = msg.Type, 
             Message = msg.Message 
         }).ToList(); 

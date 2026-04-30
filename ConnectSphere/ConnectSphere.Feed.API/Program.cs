@@ -38,7 +38,7 @@ SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt["Secret"]!))
   
 builder.Services.AddScoped<IFeedService, FeedService>(); 
   
-// Typed HTTP clients with Polly retry 
+
 builder.Services.AddHttpClient("PostService", c => 
     c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:PostService"]!)) 
     .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ => 

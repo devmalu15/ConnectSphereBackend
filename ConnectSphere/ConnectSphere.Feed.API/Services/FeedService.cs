@@ -30,7 +30,7 @@ new()
         _ctx = ctx; _cache = cache; _httpFactory = httpFactory; _logger = logger;
     }
 
-    // ─── Standard home feed (cache-first) ─────────────────────────────────── 
+    
 
     public async Task<PagedResult<FeedItemDto>> GetFeedForUserAsync(int userId, int
 page, int pageSize)
@@ -57,32 +57,16 @@ JsonSerializer.Deserialize<PagedResult<FeedItemDto>>(cached);
         return result;
     }
 
-    // ─── TAG-BASED SUGGESTED FEED ALGORITHM ──────────────────────────────── 
+    
 
-    /// <summary> 
-    /// Returns a ranked list of feed items personalised by the user's tag preference profile. 
-    /// 
-    /// ALGORITHM: 
-    ///  1. Load the user's tag affinity map  (tag -> affinityScore)  from UserTagPreferences. 
-    ///  2. Load candidate FeedItems (last N days, not yet shown on page). 
-    ///  3. For each FeedItem, fetch the associated post's hashtags via Post.API HTTP call (or 
-    ///     from a local cache of recently-seen hashtags). 
-    ///  4. Compute a personalisation score: 
-    ///       personalisationScore = SUM(affinityScore for each matching tag) / max(1, totalTagsOnPost) 
-    ///  5. Blend with the existing engagement score: 
-    ///       finalScore = (0.6 * personalisationScore) + (0.4 * normalizedEngagementScore) 
-    ///  6. Return items ordered by finalScore descending. 
-    /// 
-    /// If the user has no tag preferences yet (cold start), fall back to standard engagement ranking. 
-    /// </summary> 
-    public async Task<IList<FeedItemDto>> GetSuggestedFeedAsync(int userId, int page, int pageSize)
+        public async Task<IList<FeedItemDto>> GetSuggestedFeedAsync(int userId, int page, int pageSize)
     {
-        // Step 1: Load tag affinities for this user 
+        
         var tagAffinities = await _ctx.UserTagPreferences
             .Where(p => p.UserId == userId)
             .ToDictionaryAsync(p => p.Tag, p => p.AffinityScore);
 
-        // Step 2: Load candidate feed items (last 7 days) 
+        
         var since = DateTime.UtcNow.AddDays(-7);
         var candidates = await _ctx.FeedItems
             .Where(f => f.UserId == userId && f.CreatedAt >= since)
@@ -91,16 +75,16 @@ JsonSerializer.Deserialize<PagedResult<FeedItemDto>>(cached);
         if (candidates.Count == 0)
             return new List<FeedItemDto>();
 
-        // Step 3 + 4: Score each candidate 
-        // Fetch hashtags for all unique posts in one batch call 
+        
+        
         var postIds = candidates.Select(c => c.PostId).Distinct().ToList();
         var postHashtags = await FetchPostHashtagsAsync(postIds);
 
-        // Normalize engagement scores (0-1 range) 
+        
         var maxEngagement = candidates.Max(c => (double)c.Score);
         if (maxEngagement == 0) maxEngagement = 1;
 
-        // Cold start: if no tag preferences, return purely by engagement 
+        
         bool hasTasteProfile = tagAffinities.Count > 0;
 
         var scored = candidates.Select(item =>
@@ -110,14 +94,14 @@ JsonSerializer.Deserialize<PagedResult<FeedItemDto>>(cached);
             double personalisationScore = 0.0;
             if (hasTasteProfile && postHashtags.TryGetValue(item.PostId, out var tags) && tags.Count > 0)
             {
-                // Sum affinities for matching tags, normalised by tag count 
+                
                 var matchScore = tags
                     .Select(tag => tagAffinities.TryGetValue(tag, out var aff) ? aff : 0.0)
                     .Sum();
                 personalisationScore = matchScore / tags.Count;
             }
 
-            // Blend: 60% personalisation, 40% engagement (cold start: 100% engagement) 
+            
             double finalScore = hasTasteProfile
                 ? (0.6 * personalisationScore) + (0.4 * normalizedEngagement)
                 : normalizedEngagement;
@@ -133,18 +117,13 @@ JsonSerializer.Deserialize<PagedResult<FeedItemDto>>(cached);
         return scored;
     }
 
-    // ─── Update tag preferences when user likes a post ───────────────────── 
+    
 
-    /// <summary> 
-    /// Called by LikeToggledConsumer when a user likes a post. 
-    /// Fetches the post's hashtags and increments the user's affinity scores for those tags. 
-    /// This is the learning step of the recommendation system. 
-    /// </summary> 
-    public async Task UpdateTagPreferencesOnLikeAsync(int userId, int postId)
+        public async Task UpdateTagPreferencesOnLikeAsync(int userId, int postId)
     {
         try
         {
-            // Fetch the post's hashtags from Post.API 
+            
             var client = _httpFactory.CreateClient("PostService");
             var response = await client.GetAsync($"api/posts/{postId}");
             if (!response.IsSuccessStatusCode) return;
@@ -154,7 +133,7 @@ response.Content.ReadFromJsonAsync<PostApiWrapper>();
             var hashtagsRaw = postData?.Data?.Hashtags;
             if (string.IsNullOrWhiteSpace(hashtagsRaw)) return;
 
-            // Parse "#travel,#food" -> ["travel", "food"] 
+            
             var tags = hashtagsRaw
                 .Split(',', StringSplitOptions.RemoveEmptyEntries)
                 .Select(t => t.Trim().TrimStart('#').ToLowerInvariant())
@@ -169,7 +148,7 @@ response.Content.ReadFromJsonAsync<PostApiWrapper>();
 
                 if (existing != null)
                 {
-                    // Increment affinity score (capped at 100 to prevent unbounded growth) 
+                    
                     existing.AffinityScore = Math.Min(existing.AffinityScore + 1.0, 100.0);
                     existing.LastUpdated = DateTime.UtcNow;
                 }
@@ -192,28 +171,28 @@ response.Content.ReadFromJsonAsync<PostApiWrapper>();
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Failed to update tag preferences for user {UserId}", userId);
-            // Non-critical: swallow exception so it doesn't break the like flow 
+            
         }
     }
 
-    // ─── Explore feed (non-followed public posts by engagement) ───────────── 
+    
 
     public async Task<IList<FeedItemDto>> GetExploreAsync(int userId)
     {
-        // Posts NOT in the user's home feed — ranked by engagement score 
+        
         var inFeed = await _ctx.FeedItems
             .Where(f => f.UserId == userId)
             .Select(f => f.PostId)
             .Distinct()
             .ToListAsync();
 
-        // Try to personalise explore feed too using tag preferences 
+        
         var tagAffinities = await _ctx.UserTagPreferences
             .Where(p => p.UserId == userId)
             .ToDictionaryAsync(p => p.Tag, p => p.AffinityScore);
 
-        // In production: fetch public posts not authored by followed users from Post.API 
-        // Here we return feed items from other users as a proxy 
+        
+        
         var exploreCandidates = await _ctx.FeedItems
             .Where(f => f.UserId != userId && !inFeed.Contains(f.PostId))
             .OrderByDescending(f => f.Score)
@@ -223,7 +202,7 @@ response.Content.ReadFromJsonAsync<PostApiWrapper>();
         return exploreCandidates.Select(ToDto).ToList();
     }
 
-    // ─── Trending hashtags ─────────────────────────────────────────────────── 
+    
 
     public async Task<IList<string>> GetTrendingHashtagsAsync(int topN = 10)
     {
@@ -233,7 +212,7 @@ response.Content.ReadFromJsonAsync<PostApiWrapper>();
             return JsonSerializer.Deserialize<IList<string>>(cached) ?? new
 List<string>();
 
-        // Fetch recent posts from Post.API and aggregate hashtags 
+        
         var client = _httpFactory.CreateClient("PostService");
         var response = await
 client.GetAsync("api/posts/public?page=1&pageSize=200");
@@ -257,7 +236,7 @@ TrendingCacheOptions);
         return trending;
     }
 
-    // ─── Feed management (SAGA consumers call these) ───────────────────────── 
+    
 
     public async Task AddToFeedAsync(int userId, int postId, int actorId, decimal
 score)
@@ -280,7 +259,7 @@ score)
 
     public async Task InvalidateFeedCacheAsync(int userId)
     {
-        // Invalidate pages 1-5 (most common) 
+        
         for (int i = 1; i <= 5; i++)
             await _cache.RemoveAsync($"feed:user:{userId}:{i}");
     }
@@ -316,7 +295,7 @@ CalculateEngagementScore(post));
         }
     }
 
-    // ─── Helper: fetch hashtags for multiple posts in one call ────────────── 
+    
 
     private async Task<Dictionary<int, List<string>>>
 FetchPostHashtagsAsync(List<int> postIds)
@@ -327,7 +306,7 @@ FetchPostHashtagsAsync(List<int> postIds)
         try
         {
             var client = _httpFactory.CreateClient("PostService");
-            // Batch: comma-separated IDs (Post.API should support this endpoint) 
+            
             var ids = string.Join(",", postIds);
             var response = await client.GetAsync($"api/posts/batch?ids={ids}");
             if (!response.IsSuccessStatusCode) return result;
@@ -361,7 +340,7 @@ response.Content.ReadFromJsonAsync<PostBatchWrapper>();
     private static FeedItemDto ToDto(FeedItem f) =>
         new(f.FeedItemId, f.UserId, f.PostId, f.ActorId, f.Score, f.CreatedAt);
 
-    // ─── Response models ───────────────────────────────────────────────────── 
+    
 
     private record PostApiWrapper(PostData? Data);
     private record PostData(int PostId, string? Hashtags, int LikeCount, int

@@ -6,9 +6,9 @@ namespace ConnectSphere.Feed.API.Entities;
 public class FeedItem 
 { 
     public int FeedItemId { get; set; } 
-    public int UserId { get; set; }        // Feed owner 
+    public int UserId { get; set; }        
     public int PostId { get; set; } 
-    public int ActorId { get; set; }       // Post author 
+    public int ActorId { get; set; }       
     public decimal Score { get; set; } = 0; 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow; 
     public DateTime? ExpiresAt { get; set; } 

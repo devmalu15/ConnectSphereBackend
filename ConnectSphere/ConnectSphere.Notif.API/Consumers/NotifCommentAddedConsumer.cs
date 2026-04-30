@@ -32,7 +32,7 @@ IConsumer<ConnectSphere.Contracts.Events.Interface.ICommentAddedEvent>
         {
             if (msg.ParentCommentId == null || msg.ParentCommentId == 0)
             {
-                // Top-level comment: Notify Post Author
+                
                 var client = _httpFactory.CreateClient("PostService");
                 var response = await client.GetAsync($"api/posts/{msg.PostId}");
                 if (response.IsSuccessStatusCode)
@@ -45,7 +45,7 @@ IConsumer<ConnectSphere.Contracts.Events.Interface.ICommentAddedEvent>
             }
             else
             {
-                // Reply: Notify Parent Comment Author
+                
                 var client = _httpFactory.CreateClient("CommentService");
                 var response = await client.GetAsync($"api/comments/{msg.ParentCommentId}");
                 if (response.IsSuccessStatusCode)
@@ -74,7 +74,7 @@ IConsumer<ConnectSphere.Contracts.Events.Interface.ICommentAddedEvent>
         }
         catch (Exception ex)
         {
-            // Log error in a real app
+            
         }
     }
 }

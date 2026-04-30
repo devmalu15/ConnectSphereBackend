@@ -15,8 +15,5 @@ pageSize);
     Task RemoveFromFeedsAsync(int postId); 
     Task BackfillFeedAsync(int recipientUserId, int followeeId); 
   
-    /// <summary> 
-    /// Called when a user likes a post — update their tag preference profile 
-    /// </summary> 
-    Task UpdateTagPreferencesOnLikeAsync(int userId, int postId); 
+        Task UpdateTagPreferencesOnLikeAsync(int userId, int postId); 
 } 

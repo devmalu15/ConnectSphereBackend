@@ -130,8 +130,8 @@ ChangePasswordDto dto)
         await _service.DeactivateAccountAsync(id);
         return Ok(ApiResponse<string>.Ok("Account deactivated."));
     }
-    // Internal endpoint for service-to-service calls — no auth required
-    // Only reachable within the internal network, not exposed through the Gateway
+    
+    
     [HttpGet("{id:int}/internal")]
     public async Task<IActionResult> GetByIdInternal(int id)
     {
@@ -139,7 +139,7 @@ ChangePasswordDto dto)
         return Ok(ApiResponse<UserDto>.Ok(user));
     }
 
-    // Only an existing Admin can promote another user
+    
     [HttpPut("{id:int}/promote")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> PromoteToAdmin(int id)
@@ -156,7 +156,7 @@ ChangePasswordDto dto)
         return Ok(ApiResponse<string>.Ok("User demoted to User."));
     }
 
-    // Admin suspend — sets IsActive = false, callable by admin without ownership check
+    
     [HttpPut("{id:int}/suspend")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Suspend(int id)
@@ -165,7 +165,7 @@ ChangePasswordDto dto)
         return Ok(ApiResponse<string>.Ok("User suspended."));
     }
 
-    // Admin reactivate — sets IsActive = true
+    
     [HttpPut("{id:int}/reactivate")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Reactivate(int id)
@@ -174,7 +174,7 @@ ChangePasswordDto dto)
         return Ok(ApiResponse<string>.Ok("User reactivated."));
     }
 
-    // User count for analytics
+    
     [HttpGet("count")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetCount()

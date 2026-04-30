@@ -33,7 +33,7 @@ u.FullName.Contains(query)))
     public async Task<IList<User>> GetSuggestedUsersAsync(int userId, IList<int> 
 followingIds) 
     { 
-        // Users followed by people the current user follows, but not yet followed by current user 
+        
         return await _ctx.Users 
             .Where(u => u.UserId != userId && u.IsActive && 
 !followingIds.Contains(u.UserId)) 

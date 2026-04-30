@@ -24,10 +24,10 @@ public class NotifLikeToggledConsumer : IConsumer<ILikeToggledEvent>
         var msg = context.Message;
         if (!msg.IsLiked) return; 
 
-        // 1. Resolve the real author ID via HTTP
+        
         int recipientId = await GetTargetAuthorId(msg.TargetId, msg.TargetType);
         
-        if (recipientId == 0) return; // Don't save if we can't find the author
+        if (recipientId == 0) return; 
 
         var typeMap = msg.TargetType == TargetType.POST ? NotifType.LIKE_POST : NotifType.LIKE_COMMENT;
         
@@ -48,7 +48,7 @@ public class NotifLikeToggledConsumer : IConsumer<ILikeToggledEvent>
     {
         try 
         {
-            // Determine which service to call based on the target type
+            
             string serviceName = type == TargetType.POST ? "PostService" : "CommentService";
             string endpoint = type == TargetType.POST ? $"api/posts/{targetId}" : $"api/comments/{targetId}";
             
@@ -57,7 +57,7 @@ public class NotifLikeToggledConsumer : IConsumer<ILikeToggledEvent>
 
             if (response.IsSuccessStatusCode)
             {
-                // Note: Ensure your Contracts project is referenced for ApiResponse and DTOs
+                
                 if (type == TargetType.POST) {
                     var result = await response.Content.ReadFromJsonAsync<ApiResponse<PostDto>>();
                     return result?.Data?.UserId ?? 0;
@@ -67,7 +67,7 @@ public class NotifLikeToggledConsumer : IConsumer<ILikeToggledEvent>
                 }
             }
         }
-        catch { /* Log error */ }
+        catch {  }
         return 0;
     }
 }

@@ -38,7 +38,7 @@ builder.Services.AddScoped<INotifService, NotifService>();
   
 builder.Services.AddMassTransit(x => 
 { 
-    // All SAGA consumers for Notif service 
+    
     x.AddConsumer<NotifLikeToggledConsumer>(); 
     x.AddConsumer<NotifCommentAddedConsumer>(); 
     x.AddConsumer<NotifFollowRequestedConsumer>(); 

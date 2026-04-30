@@ -5,8 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ConnectSphere.Like.API.Consumers;
 
-// When a post is deleted, cascade-delete all likes on that post
-// so orphaned Like rows don't accumulate.
+
+
 public class LikePostDeletedConsumer : IConsumer<IPostDeletedEvent>
 {
     private readonly LikeDbContext _ctx;

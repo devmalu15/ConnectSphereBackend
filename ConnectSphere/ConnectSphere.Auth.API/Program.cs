@@ -53,7 +53,7 @@ builder.Services.AddMassTransit(x =>
     x.AddConsumer<CountersUpdatedConsumer>(); 
     x.UsingRabbitMq((ctx, cfg) => 
     { 
-        // Force the use of port 5671 for SSL
+        
         cfg.Host(builder.Configuration["RabbitMQ:Host"], 5671, builder.Configuration["RabbitMQ:VHost"], h => 
         { 
             h.Username(builder.Configuration["RabbitMQ:Username"]!); 

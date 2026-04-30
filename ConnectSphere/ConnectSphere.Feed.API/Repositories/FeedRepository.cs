@@ -59,8 +59,8 @@ public class FeedRepository : IFeedRepository
   
     public async Task<IList<int>> RemoveByPostIdAsync(int postId) 
     { 
-        // Collect affected user IDs before deleting so callers can 
-        // invalidate their Redis cache entries 
+        
+        
         var affectedUserIds = await _ctx.FeedItems 
             .Where(f => f.PostId == postId) 
             .Select(f => f.UserId) 

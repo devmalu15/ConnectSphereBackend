@@ -19,7 +19,7 @@ public class NotifRepostedConsumer : IConsumer<IPostRepostedEvent>
     {
         var msg = context.Message;
 
-        // Don't notify if the user reposts their own post
+        
         if (msg.ReposterId == msg.OriginalAuthorId) return;
 
         _ctx.Notifications.Add(new Notification

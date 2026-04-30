@@ -55,7 +55,7 @@ public class PostService : IPostService
                 post.MediaUrl = result.SecureUrl.ToString();
                 post.MediaPublicId = result.PublicId;
             }
-            else // IMAGE or GIF
+            else 
             {
                 var uploadParams = new ImageUploadParams
                 {
@@ -229,7 +229,7 @@ KeyNotFoundException();
     public async Task<PostDto> RepostAsync(int postId, int userId)
     {
         var original = await _repo.GetByIdAsync(postId) ?? throw new KeyNotFoundException();
-        // Increment share count on original 
+        
         await _ctx.Posts.Where(p => p.PostId == postId)
             .ExecuteUpdateAsync(s => s.SetProperty(p => p.ShareCount, p => p.ShareCount + 1));
 

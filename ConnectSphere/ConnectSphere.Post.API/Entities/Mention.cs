@@ -13,7 +13,7 @@ public class Mention
     [ForeignKey("PostId")]
     public Post Post { get; set; }
 
-    public int UserId { get; set; } // The mentioned user's ID
+    public int UserId { get; set; } 
 
     public DateTime MentionedAt { get; set; } = DateTime.UtcNow;
 }

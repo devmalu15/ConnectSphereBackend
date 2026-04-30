@@ -18,7 +18,7 @@ public class AdminController : ControllerBase
     private readonly IHttpClientFactory _httpFactory; 
     private readonly IPublishEndpoint _bus; 
   
-    // In AdminController — inject IHttpContextAccessor
+    
 private readonly IHttpContextAccessor _httpContextAccessor;
 
 public AdminController(IAdminService service, IHttpClientFactory httpFactory,
@@ -28,7 +28,7 @@ public AdminController(IAdminService service, IHttpClientFactory httpFactory,
     _bus = bus; _httpContextAccessor = httpContextAccessor;
 }
 
-// Helper to get the raw Bearer token from the incoming request
+
 private string? BearerToken => _httpContextAccessor.HttpContext?
     .Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
   
@@ -46,8 +46,8 @@ public async Task<IActionResult> GetUsers([FromQuery] int page = 1, [FromQuery] 
 { 
     var client = _httpFactory.CreateClient("AuthService"); 
     
-    // REMOVE page and pageSize from the URL because the Auth API doesn't have them in the signature
-    // Also, ensure 'q' is not just empty if the repo doesn't like empty strings
+    
+    
     var response = await client.GetAsync("api/users/search?q="); 
 
     if (!response.IsSuccessStatusCode)
@@ -58,9 +58,9 @@ public async Task<IActionResult> GetUsers([FromQuery] int page = 1, [FromQuery] 
 
     var result = await response.Content.ReadAsStringAsync();
     
-    // MANUAL PAGINATION: Since Auth API returns everything, we paginate here in the Admin API
-    // Note: This is less efficient but avoids changing the Auth API
-    // You would need to deserialize 'result', Skip, and Take here.
+    
+    
+    
     
     return Content(result, "application/json"); 
 }
@@ -92,7 +92,7 @@ ClientIp);
     [HttpGet("analytics")]
 public async Task<IActionResult> GetAnalytics()
 {
-    // Pass token so AdminService can forward it
+    
     var result = await _service.GetAnalyticsAsync(BearerToken!);
     return Ok(ApiResponse<object>.Ok(result));
 }

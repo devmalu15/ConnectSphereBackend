@@ -34,7 +34,7 @@ SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt["Secret"]!))
   
 builder.Services.AddScoped<IAdminService, AdminService>(); 
   
-// Typed HTTP clients to proxy calls to other services 
+
 builder.Services.AddHttpClient("AuthService", c => 
     c.BaseAddress = new Uri(builder.Configuration["ServiceUrls:AuthService"]!)) 
     .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ => 
@@ -94,7 +94,7 @@ ReferenceType.SecurityScheme, Id = "Bearer" } }, Array.Empty<string>() }
     }); 
 }); 
   
-// Admin API: restrict CORS to admin frontend URL only 
+
 var adminOrigin = builder.Configuration["AdminAllowedOrigins"] ?? 
 builder.Configuration["AllowedOrigins"]!; 
 builder.Services.AddCors(o => o.AddPolicy("AllowAdmin", p => 

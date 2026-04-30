@@ -21,7 +21,7 @@ public class Post
     public MediaType MediaType { get; set; } = MediaType.NONE; 
     public Visibility Visibility { get; set; } = Visibility.PUBLIC; 
   
-    public string? Hashtags { get; set; } // comma-separated: "#travel,#food" 
+    public string? Hashtags { get; set; } 
   
     public int LikeCount { get; set; } = 0; 
     public int CommentCount { get; set; } = 0; 
@@ -32,7 +32,7 @@ public class Post
     public PostDistribution DistributionStatus { get; set; } = 
 PostDistribution.PENDING; 
   
-    public int? OriginalPostId { get; set; } // Set when repost 
+    public int? OriginalPostId { get; set; } 
   
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow; 
     public DateTime? UpdatedAt { get; set; } 

@@ -18,17 +18,17 @@ public class FeedDbContext : DbContext
         {
             entity.HasKey(f => f.FeedItemId);
 
-            // Fixes the truncation warning and ensures ranking accuracy
+            
             entity.Property(f => f.Score)
-                  .HasPrecision(18, 4); // Total 18 digits, 4 after the decimal
+                  .HasPrecision(18, 4); 
         });
 
         modelBuilder.Entity<UserTagPreference>(entity => 
         {
             entity.HasKey(u => u.UserTagPreferenceId);
 
-            // Optional: If UserTagPreference also has a decimal 'Weight' or 'Score'
-            // entity.Property(u => u.Weight).HasPrecision(18, 4);
+            
+            
         });
     } 
 }

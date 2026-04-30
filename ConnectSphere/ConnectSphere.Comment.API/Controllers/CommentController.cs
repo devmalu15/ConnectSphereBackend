@@ -65,13 +65,13 @@ Ok(ApiResponse<CommentDto>.Ok(comment));
         return Ok(ApiResponse<string>.Ok("Comment deleted."));
     }
 
-    // CommentController — add this
+    
 [HttpDelete("{id:int}/internal")]
 public async Task<IActionResult> DeleteInternal(int id)
 {
     var comment = await _service.GetByIdAsync(id);
     if (comment == null) return NotFound();
-    await _service.SoftDeleteAsync(id, comment.UserId); // bypass ownership check
+    await _service.SoftDeleteAsync(id, comment.UserId); 
     return Ok(ApiResponse<string>.Ok("Comment deleted by admin."));
 }
     [HttpGet("count")]

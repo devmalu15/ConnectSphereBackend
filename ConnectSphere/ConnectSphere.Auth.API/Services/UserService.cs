@@ -98,8 +98,8 @@ Random().Next(1000, 9999),
 
     public async Task<string> RefreshTokenAsync(string refreshToken)
     {
-        // In production: validate refresh token from DB/Redis 
-        // Simplified: decode and re-issue 
+        
+        
         var handler = new JwtSecurityTokenHandler();
         var jwt = handler.ReadJwtToken(refreshToken);
         var userIdClaim = jwt.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
@@ -111,7 +111,7 @@ Random().Next(1000, 9999),
 
     public async Task LogoutAsync(int userId, string token)
     {
-        // Blacklist token in Redis for remaining TTL 
+        
         var key = $"blacklist:token:{token}";
         await _cache.SetStringAsync(key, "1", new DistributedCacheEntryOptions
         {
@@ -142,7 +142,7 @@ KeyNotFoundException("User not found.");
 
     public async Task<IList<UserDto>> GetSuggestedUsersAsync(int userId)
     {
-        // Simplified: return top users not already followed 
+        
         var users = await _repo.GetSuggestedUsersAsync(userId, new List<int>());
         return users.Select(ToDto).ToList();
     }

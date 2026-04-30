@@ -70,17 +70,17 @@ public class LikeService : ILikeService
         Console.WriteLine("exited true if/else" + willBeLiked);
         return willBeLiked;
     }
-    //     private async Task UpdateCountOnRemoteService(int targetId, TargetType 
-    // targetType, int delta) 
-    //     { 
-    //         var serviceName = targetType == TargetType.POST ? "PostService" : 
-    // "CommentService"; 
-    //         var client = _httpFactory.CreateClient(serviceName); 
-    //         var endpoint = targetType == TargetType.POST 
-    //             ? $"api/posts/{targetId}/like-count?delta={delta}" 
-    //             : $"api/comments/{targetId}/like-count?delta={delta}"; 
-    //         await client.PatchAsync(endpoint, null); 
-    //     } 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     public async Task<int> GetLikeCountAsync(int targetId, TargetType targetType)
 =>

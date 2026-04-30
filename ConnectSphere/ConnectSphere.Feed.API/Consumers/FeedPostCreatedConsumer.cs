@@ -4,10 +4,6 @@ using MassTransit;
 
 namespace ConnectSphere.Feed.API.Consumers;
 
-/// <summary> 
-/// Handles PostCreatedEvent: fanout to all followers' feeds. 
-/// On failure, publishes PostFeedFanoutFailedEvent as compensation. 
-/// </summary> 
 public class FeedPostCreatedConsumer : IConsumer<IPostCreatedEvent>
 {
     private readonly IFeedService _feedService;
@@ -25,16 +21,16 @@ IHttpClientFactory httpFactory)
         var msg = context.Message;
         try
         {
-            // Get all followers of the post author 
+            
             var client = _httpFactory.CreateClient("FollowService");
             var response = await client.GetAsync($"api/follows/internal/{msg.UserId}/following-ids");
-            // Note: "following-ids" returns followers OF the author 
+            
             if (!response.IsSuccessStatusCode) throw new Exception("Could not fetch followers.");
 
             var followers = await response.Content.ReadFromJsonAsync<FollowerIdsWrapper>();
             if (followers?.Data == null) return;
 
-            var engagementScore = 0m; // New post has no engagement yet 
+            var engagementScore = 0m; 
             foreach (var followerId in followers.Data)
             {
                 await _feedService.AddToFeedAsync(followerId, msg.PostId,

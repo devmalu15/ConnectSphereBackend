@@ -62,7 +62,7 @@ result.Status.ToString()
     [Authorize]
     public async Task<IActionResult> RemoveFollower(int userId, int followerId)
     {
-        // Security check: Only the account owner can remove their own followers
+        
         if (CurrentUserId != userId) return Forbid();
 
         await _service.RemoveFollowerAsync(userId, followerId);
@@ -115,25 +115,21 @@ result.Status.ToString()
         return Ok(ApiResponse<IList<int>>.Ok(ids));
     }
 
-    /// <summary> 
-    /// Returns followers OF the userId.
-    /// </summary> 
+    
     [HttpGet("{userId:int}/following-ids")]
     [Authorize]
     public async Task<IActionResult> GetFollowingIds(int userId)
     {
-        var ids = await _service.GetFollowerIdsAsync(userId); // returns followers OF userId 
+        var ids = await _service.GetFollowerIdsAsync(userId); 
         return Ok(ApiResponse<IList<int>>.Ok(ids));
     }
 
-    /// <summary> 
-    /// Used internally by FeedService SAGA consumer to get follower IDs for fanout. 
-    /// </summary> 
+   
     [HttpGet("internal/{userId:int}/following-ids")]
     [ApiExplorerSettings(IgnoreApi = true)]
     public async Task<IActionResult> GetFollowingIdsInternal(int userId)
     {
-        var ids = await _service.GetFollowerIdsAsync(userId); // returns followers OF userId 
+        var ids = await _service.GetFollowerIdsAsync(userId); 
         return Ok(ApiResponse<IList<int>>.Ok(ids));
     }
 }

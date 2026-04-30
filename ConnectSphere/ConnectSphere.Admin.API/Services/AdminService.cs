@@ -17,7 +17,7 @@ public class AdminService : IAdminService
 
     public async Task SuspendUserAsync(int adminId, string adminName, int userId, string ip, string token)
 {
-    var before = await FetchUserJsonAsync(userId); // internal — no auth needed
+    var before = await FetchUserJsonAsync(userId); 
 
     var client = _httpFactory.CreateClient("AuthService");
     client.DefaultRequestHeaders.Authorization =
@@ -34,7 +34,7 @@ public class AdminService : IAdminService
         var before = await FetchUserJsonAsync(userId);
 
         var client = _httpFactory.CreateClient("AuthService");
-        // Call the reactivate endpoint that now actually exists
+        
         var response = await client.PutAsync($"api/users/{userId}/reactivate", null);
         response.EnsureSuccessStatusCode();
 
@@ -46,7 +46,7 @@ public class AdminService : IAdminService
 
     public async Task DeletePostAsync(int adminId, string adminName, int postId, string ip)
     {
-        // Use internal endpoint — no auth needed for service-to-service
+        
         var client = _httpFactory.CreateClient("PostService");
         var before = await client.GetStringAsync($"api/posts/{postId}/internal");
 
@@ -94,7 +94,7 @@ public class AdminService : IAdminService
         await _ctx.SaveChangesAsync();
     }
 
-    // Uses the /internal endpoint — no auth token needed
+    
     private async Task<string> FetchUserJsonAsync(int userId)
     {
         var client = _httpFactory.CreateClient("AuthService");
@@ -115,7 +115,7 @@ public class AdminService : IAdminService
         var commentCount = await FetchCountAsync(commentClient, "api/comments/count");
         var likeCount = await FetchCountAsync(likeClient, "api/likes/total-count");
 
-        // Mock some extra data for the charts
+        
         var monthlyGrowth = new[] 
         { 
             new { count = userCount / 4 }, 
@@ -130,8 +130,8 @@ public class AdminService : IAdminService
             totalPosts = postCount, 
             totalComments = commentCount, 
             totalLikes = likeCount,
-            activeUsers = (int)(userCount * 0.8), // Mock
-            newUsersToday = (int)(userCount * 0.05), // Mock
+            activeUsers = (int)(userCount * 0.8), 
+            newUsersToday = (int)(userCount * 0.05), 
             monthlyGrowth = monthlyGrowth
         };
     }

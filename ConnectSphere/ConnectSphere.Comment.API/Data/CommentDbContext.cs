@@ -18,7 +18,7 @@ base(options) { }
             entity.HasKey(c => c.CommentId); 
             entity.Property(c => c.Content).IsRequired().HasMaxLength(1000); 
             entity.Property(c => c.CreatedAt).HasDefaultValueSql("GETUTCDATE()"); 
-            // Soft-delete global query filter 
+            
             entity.HasQueryFilter(c => !c.IsDeleted); 
         }); 
     } 

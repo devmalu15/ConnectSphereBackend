@@ -16,7 +16,7 @@ feedService;
     public async Task Consume(ConsumeContext<ILikeToggledEvent> context) 
     { 
         var msg = context.Message; 
-        if (!msg.IsLiked) return; // Only learn on like, not unlike 
+        if (!msg.IsLiked) return; 
         if (msg.TargetType != ConnectSphere.Contracts.Enums.TargetType.POST) 
 return; 
         await _feedService.UpdateTagPreferencesOnLikeAsync(msg.UserId, 

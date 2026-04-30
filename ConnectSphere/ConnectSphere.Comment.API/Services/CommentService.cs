@@ -74,7 +74,7 @@ IHttpClientFactory httpFactory)
             }
             catch (Exception)
             {
-                // Log error
+                
             }
         }
     }
@@ -140,12 +140,12 @@ commentId)
 
     if (comment.UserId != userId) throw new UnauthorizedAccessException();
 
-    // Soft-delete the comment itself
+    
     await _ctx.Comments
         .Where(c => c.CommentId == commentId)
         .ExecuteUpdateAsync(s => s.SetProperty(c => c.IsDeleted, true));
 
-    // Soft-delete all direct replies to this comment
+    
     var replyCount = await _ctx.Comments
         .Where(c => c.ParentCommentId == commentId && !c.IsDeleted)
         .CountAsync();
@@ -157,7 +157,7 @@ commentId)
             .ExecuteUpdateAsync(s => s.SetProperty(c => c.IsDeleted, true));
     }
 
-    // Total deleted = the comment itself + its replies
+    
     int totalDeleted = 1 + replyCount;
 
     await _bus.Publish(new CommentDeletedEvent(
